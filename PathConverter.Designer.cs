@@ -1,3 +1,5 @@
+using windows2msdos_variables;
+
 namespace windows2msdos
 {
     partial class Window_PathConverter
@@ -29,8 +31,8 @@ namespace windows2msdos
             Label_DOSPathText = new Label();
             Button_SelectFile = new Button();
             Button_SelectFolder = new Button();
-            Button_ConvertPaths = new Button();
-            Label_PathConvertIndicator = new Label();
+            Button_ResetPaths = new Button();
+            Label_PathConversionIndicator = new Label();
             TextBox_WindowsPath = new RichTextBox();
             TextBox_DOSPath = new RichTextBox();
             CheckBox_SwitchConverter = new CheckBox();
@@ -40,6 +42,7 @@ namespace windows2msdos
             // Label_WindowsPathText
             // 
             Label_WindowsPathText.AutoSize = true;
+            Label_WindowsPathText.BackColor = Color.Transparent;
             Label_WindowsPathText.Location = new Point(11, 18);
             Label_WindowsPathText.Margin = new Padding(0);
             Label_WindowsPathText.Name = "Label_WindowsPathText";
@@ -50,6 +53,7 @@ namespace windows2msdos
             // Label_DOSPathText
             // 
             Label_DOSPathText.AutoSize = true;
+            Label_DOSPathText.BackColor = Color.Transparent;
             Label_DOSPathText.Location = new Point(13, 75);
             Label_DOSPathText.Margin = new Padding(0);
             Label_DOSPathText.Name = "Label_DOSPathText";
@@ -60,53 +64,59 @@ namespace windows2msdos
             // Button_SelectFile
             // 
             Button_SelectFile.AutoSize = true;
-            Button_SelectFile.Location = new Point(686, 32);
+            Button_SelectFile.BackColor = Color.SeaShell;
+            Button_SelectFile.Location = new Point(687, 56);
             Button_SelectFile.Margin = new Padding(0);
             Button_SelectFile.Name = "Button_SelectFile";
-            Button_SelectFile.Size = new Size(54, 34);
+            Button_SelectFile.Size = new Size(53, 34);
             Button_SelectFile.TabIndex = 4;
             Button_SelectFile.Text = "File";
-            Button_SelectFile.UseVisualStyleBackColor = true;
+            Button_SelectFile.UseVisualStyleBackColor = false;
             Button_SelectFile.Click += Button_SelectFile_Click;
             // 
             // Button_SelectFolder
             // 
             Button_SelectFolder.AutoSize = true;
-            Button_SelectFolder.Location = new Point(744, 32);
+            Button_SelectFolder.BackColor = Color.SeaShell;
+            Button_SelectFolder.Location = new Point(743, 56);
             Button_SelectFolder.Margin = new Padding(0);
             Button_SelectFolder.Name = "Button_SelectFolder";
-            Button_SelectFolder.Size = new Size(54, 34);
+            Button_SelectFolder.Size = new Size(53, 34);
             Button_SelectFolder.TabIndex = 5;
             Button_SelectFolder.Text = "Folder";
-            Button_SelectFolder.UseVisualStyleBackColor = true;
+            Button_SelectFolder.UseVisualStyleBackColor = false;
             Button_SelectFolder.Click += Button_SelectFolder_Click;
             // 
-            // Button_ConvertPaths
+            // Button_ResetPaths
             // 
-            Button_ConvertPaths.AutoSize = true;
-            Button_ConvertPaths.ForeColor = SystemColors.Desktop;
-            Button_ConvertPaths.Location = new Point(656, 137);
-            Button_ConvertPaths.Margin = new Padding(0);
-            Button_ConvertPaths.Name = "Button_ConvertPaths";
-            Button_ConvertPaths.Size = new Size(138, 34);
-            Button_ConvertPaths.TabIndex = 7;
-            Button_ConvertPaths.Text = "Convert";
-            Button_ConvertPaths.UseVisualStyleBackColor = true;
+            Button_ResetPaths.AutoSize = true;
+            Button_ResetPaths.BackColor = Color.SeaShell;
+            Button_ResetPaths.ForeColor = SystemColors.Desktop;
+            Button_ResetPaths.Location = new Point(687, 140);
+            Button_ResetPaths.Margin = new Padding(0);
+            Button_ResetPaths.Name = "Button_ResetPaths";
+            Button_ResetPaths.Size = new Size(109, 34);
+            Button_ResetPaths.TabIndex = 7;
+            Button_ResetPaths.Text = "Reset";
+            Button_ResetPaths.UseVisualStyleBackColor = false;
+            Button_ResetPaths.Click += Button_ResetPaths_Click;
             // 
-            // Label_PathConvertIndicator
+            // Label_PathConversionIndicator
             // 
-            Label_PathConvertIndicator.AutoSize = true;
-            Label_PathConvertIndicator.Font = new Font("Segoe MDL2 Assets", 9F);
-            Label_PathConvertIndicator.ForeColor = Color.Black;
-            Label_PathConvertIndicator.Location = new Point(11, 159);
-            Label_PathConvertIndicator.Margin = new Padding(0);
-            Label_PathConvertIndicator.Name = "Label_PathConvertIndicator";
-            Label_PathConvertIndicator.Size = new Size(192, 12);
-            Label_PathConvertIndicator.TabIndex = 10;
-            Label_PathConvertIndicator.Text = "Converting: Windows Path -> MS-DOS Path";
+            Label_PathConversionIndicator.AutoSize = true;
+            Label_PathConversionIndicator.BackColor = Color.Transparent;
+            Label_PathConversionIndicator.Font = new Font("Segoe UI", 7F);
+            Label_PathConversionIndicator.ForeColor = Color.Black;
+            Label_PathConversionIndicator.Location = new Point(11, 162);
+            Label_PathConversionIndicator.Margin = new Padding(0);
+            Label_PathConversionIndicator.Name = "Label_PathConversionIndicator";
+            Label_PathConversionIndicator.Size = new Size(199, 12);
+            Label_PathConversionIndicator.TabIndex = 10;
+            Label_PathConversionIndicator.Text = "Converting: Windows Path -> MS-DOS Path";
             // 
             // TextBox_WindowsPath
             // 
+            TextBox_WindowsPath.BackColor = Color.White;
             TextBox_WindowsPath.Location = new Point(100, 15);
             TextBox_WindowsPath.Name = "TextBox_WindowsPath";
             TextBox_WindowsPath.Size = new Size(582, 51);
@@ -116,6 +126,7 @@ namespace windows2msdos
             // 
             // TextBox_DOSPath
             // 
+            TextBox_DOSPath.BackColor = Color.White;
             TextBox_DOSPath.Location = new Point(100, 75);
             TextBox_DOSPath.Name = "TextBox_DOSPath";
             TextBox_DOSPath.Size = new Size(582, 51);
@@ -126,24 +137,28 @@ namespace windows2msdos
             // CheckBox_SwitchConverter
             // 
             CheckBox_SwitchConverter.AutoSize = true;
+            CheckBox_SwitchConverter.BackColor = Color.Transparent;
+            CheckBox_SwitchConverter.ForeColor = Color.Black;
             CheckBox_SwitchConverter.Location = new Point(12, 140);
             CheckBox_SwitchConverter.Name = "CheckBox_SwitchConverter";
             CheckBox_SwitchConverter.Size = new Size(124, 19);
             CheckBox_SwitchConverter.TabIndex = 13;
             CheckBox_SwitchConverter.Text = "Switch Conversion";
-            CheckBox_SwitchConverter.UseVisualStyleBackColor = true;
+            CheckBox_SwitchConverter.UseVisualStyleBackColor = false;
             CheckBox_SwitchConverter.CheckedChanged += CheckBox_SwitchConverter_CheckedChanged;
             // 
             // Label_PathConversionOpenText
             // 
+            Label_PathConversionOpenText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             Label_PathConversionOpenText.AutoSize = true;
+            Label_PathConversionOpenText.BackColor = Color.Transparent;
             Label_PathConversionOpenText.Enabled = false;
-            Label_PathConversionOpenText.Font = new Font("Segoe MDL2 Assets", 9F);
+            Label_PathConversionOpenText.Font = new Font("Segoe UI", 7F);
             Label_PathConversionOpenText.ForeColor = Color.Black;
-            Label_PathConversionOpenText.Location = new Point(693, 16);
+            Label_PathConversionOpenText.Location = new Point(691, 40);
             Label_PathConversionOpenText.Margin = new Padding(0);
             Label_PathConversionOpenText.Name = "Label_PathConversionOpenText";
-            Label_PathConversionOpenText.Size = new Size(98, 12);
+            Label_PathConversionOpenText.Size = new Size(101, 12);
             Label_PathConversionOpenText.TabIndex = 14;
             Label_PathConversionOpenText.Text = "Open For Conversion:";
             Label_PathConversionOpenText.UseMnemonic = false;
@@ -152,13 +167,14 @@ namespace windows2msdos
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.WhiteSmoke;
             ClientSize = new Size(804, 182);
             Controls.Add(Label_PathConversionOpenText);
             Controls.Add(CheckBox_SwitchConverter);
             Controls.Add(TextBox_DOSPath);
             Controls.Add(TextBox_WindowsPath);
-            Controls.Add(Label_PathConvertIndicator);
-            Controls.Add(Button_ConvertPaths);
+            Controls.Add(Label_PathConversionIndicator);
+            Controls.Add(Button_ResetPaths);
             Controls.Add(Button_SelectFolder);
             Controls.Add(Button_SelectFile);
             Controls.Add(Label_DOSPathText);
@@ -171,15 +187,52 @@ namespace windows2msdos
         }
 
         #endregion
-        private Label Label_WindowsPathText;
-        private Label Label_DOSPathText;
-        private Button Button_SelectFile;
-        private Button Button_SelectFolder;
-        private Button Button_ConvertPaths;
-        private Label Label_PathConvertIndicator;
-        private RichTextBox TextBox_WindowsPath;
-        private RichTextBox TextBox_DOSPath;
-        private CheckBox CheckBox_SwitchConverter;
-        private Label Label_PathConversionOpenText;
+        public Label Label_WindowsPathText;
+        public Label Label_DOSPathText;
+        public Button Button_SelectFile;
+        public Button Button_SelectFolder;
+        public Button Button_ResetPaths;
+        public Label Label_PathConversionIndicator;
+        public RichTextBox TextBox_WindowsPath;
+        public RichTextBox TextBox_DOSPath;
+        public CheckBox CheckBox_SwitchConverter;
+        public Label Label_PathConversionOpenText;
+
+        private void ChangeWindowColors()
+        {
+            // Get the variables for the entire program
+            var variables = new Variables();
+
+            // If Windows is in dark mode, apply the dark window colors
+            if (variables.AllWindows_Booleans_DarkMode)
+            {
+                // Change the window background color to black
+                BackColor = Color.Black;
+
+                // Change all text label colors from black to white
+                Label_WindowsPathText.ForeColor = Color.White;
+                Label_DOSPathText.ForeColor = Color.White;
+
+                Label_PathConversionOpenText.ForeColor = Color.White;
+                Label_PathConversionIndicator.ForeColor = Color.White;
+
+                // Change button colors to fit the dark mode setting
+                Button_SelectFile.ForeColor = Color.White;
+                Button_SelectFile.BackColor = Color.DarkRed;
+
+                Button_SelectFolder.ForeColor = Color.White;
+                Button_SelectFolder.BackColor = Color.DarkRed;
+
+                Button_ResetPaths.ForeColor = Color.White;
+                Button_ResetPaths.BackColor = Color.DarkRed;
+
+                // Change all check box text colors from black to white
+                CheckBox_SwitchConverter.ForeColor = Color.White;
+
+                // Change all text box from black to white
+                TextBox_WindowsPath.BackColor = Color.White;
+                TextBox_DOSPath.BackColor = Color.White;
+            }
+        }
     }
 }

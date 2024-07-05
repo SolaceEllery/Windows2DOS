@@ -1,13 +1,64 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>icon.ico</ApplicationIcon>
+    <StartupObject>windows2msdos.Program</StartupObject>
+    <Authors>Spencerly D. Everly</Authors>
+    <Version>0.1.0.1</Version>
+    <Company>Spencerly Enterprises</Company>
+    <Product>Windows2DOS</Product>
+    <Description>Useful bidirectional Windows/DOS converter tools</Description>
+    <Copyright>2024 Spencerly Enterprises, No Rights Reserved</Copyright>
+    <PackageProjectUrl>https://github.com/SpencerlyEverly/Windows2DOS</PackageProjectUrl>
+    <PackageIcon>icon-program.png</PackageIcon>
+    <Title>Windows2DOS</Title>
+    <PackageId>Windows2DOS</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/SpencerlyEverly/Windows2DOS</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>windows,dos,converter,tool,tools,convert,from,to,and,back,bidirectional</PackageTags>
+    <PackageOutputPath>$(SolutionDir)bin\$(Configuration)</PackageOutputPath>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <AssemblyName>Windows2DOS</AssemblyName>
+    <RootNamespace>Windows2DOS</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="icon-3x.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Update="icon-program.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Update="LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 </Project>

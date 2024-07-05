@@ -1,4 +1,6 @@
-﻿namespace windows2msdos
+﻿using windows2msdos_variables;
+
+namespace windows2msdos
 {
     partial class Window_MainWindow
     {
@@ -30,71 +32,68 @@
         {
             Button_MainMenuConvertPaths = new Button();
             Label_WelcomeText = new Label();
-            Label_WelcomeInformation1 = new Label();
-            Label_WelcomeInformation2 = new Label();
+            Label_WelcomeInformation = new Label();
             Button_MainMenuAboutThisProgram = new Button();
             SuspendLayout();
             // 
             // Button_MainMenuConvertPaths
             // 
+            Button_MainMenuConvertPaths.BackColor = Color.SeaShell;
             Button_MainMenuConvertPaths.Font = new Font("Roboto", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Button_MainMenuConvertPaths.ForeColor = Color.Black;
             Button_MainMenuConvertPaths.Location = new Point(572, 12);
             Button_MainMenuConvertPaths.Name = "Button_MainMenuConvertPaths";
             Button_MainMenuConvertPaths.Size = new Size(216, 40);
             Button_MainMenuConvertPaths.TabIndex = 0;
             Button_MainMenuConvertPaths.Text = "Path Converter";
-            Button_MainMenuConvertPaths.UseVisualStyleBackColor = true;
+            Button_MainMenuConvertPaths.UseVisualStyleBackColor = false;
             Button_MainMenuConvertPaths.Click += Button_MainMenuConvertPaths_Click;
             // 
             // Label_WelcomeText
             // 
             Label_WelcomeText.AutoSize = true;
+            Label_WelcomeText.BackColor = Color.Transparent;
             Label_WelcomeText.Font = new Font("Spencer Everly Font V3", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            Label_WelcomeText.ForeColor = Color.Black;
             Label_WelcomeText.Location = new Point(12, 9);
             Label_WelcomeText.Name = "Label_WelcomeText";
             Label_WelcomeText.Size = new Size(436, 39);
             Label_WelcomeText.TabIndex = 1;
             Label_WelcomeText.Text = "Welcome to Windows2DOS.";
             // 
-            // Label_WelcomeInformation1
+            // Label_WelcomeInformation
             // 
-            Label_WelcomeInformation1.AutoSize = true;
-            Label_WelcomeInformation1.Font = new Font("Spencer Everly Font V3", 12F);
-            Label_WelcomeInformation1.Location = new Point(12, 61);
-            Label_WelcomeInformation1.Name = "Label_WelcomeInformation1";
-            Label_WelcomeInformation1.Size = new Size(464, 20);
-            Label_WelcomeInformation1.TabIndex = 2;
-            Label_WelcomeInformation1.Text = "This is a conversion tool for many things Windows + DOS related.";
-            // 
-            // Label_WelcomeInformation2
-            // 
-            Label_WelcomeInformation2.AutoSize = true;
-            Label_WelcomeInformation2.Font = new Font("Spencer Everly Font V3", 12F);
-            Label_WelcomeInformation2.Location = new Point(12, 89);
-            Label_WelcomeInformation2.Name = "Label_WelcomeInformation2";
-            Label_WelcomeInformation2.Size = new Size(449, 20);
-            Label_WelcomeInformation2.TabIndex = 3;
-            Label_WelcomeInformation2.Text = "Please select any of our tools on the right in order to use them!";
+            Label_WelcomeInformation.AutoSize = true;
+            Label_WelcomeInformation.BackColor = Color.Transparent;
+            Label_WelcomeInformation.Font = new Font("Spencer Everly Font V3", 12F);
+            Label_WelcomeInformation.ForeColor = Color.Black;
+            Label_WelcomeInformation.Location = new Point(12, 61);
+            Label_WelcomeInformation.Name = "Label_WelcomeInformation";
+            Label_WelcomeInformation.Size = new Size(464, 40);
+            Label_WelcomeInformation.TabIndex = 2;
+            Label_WelcomeInformation.Text = "This is a conversion tool for many things Windows + DOS related.\r\nPlease select any of our tools on the right in order to use them!";
             // 
             // Button_MainMenuAboutThisProgram
             // 
+            Button_MainMenuAboutThisProgram.BackColor = Color.SeaShell;
             Button_MainMenuAboutThisProgram.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            Button_MainMenuAboutThisProgram.ForeColor = Color.Black;
             Button_MainMenuAboutThisProgram.Location = new Point(12, 250);
             Button_MainMenuAboutThisProgram.Name = "Button_MainMenuAboutThisProgram";
             Button_MainMenuAboutThisProgram.Size = new Size(188, 57);
             Button_MainMenuAboutThisProgram.TabIndex = 4;
             Button_MainMenuAboutThisProgram.Text = "About This Program";
-            Button_MainMenuAboutThisProgram.UseVisualStyleBackColor = true;
+            Button_MainMenuAboutThisProgram.UseVisualStyleBackColor = false;
             Button_MainMenuAboutThisProgram.Click += Button_MainMenuAboutThisProgram_Click;
             // 
             // Window_MainWindow
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.WhiteSmoke;
             ClientSize = new Size(800, 319);
             Controls.Add(Button_MainMenuAboutThisProgram);
-            Controls.Add(Label_WelcomeInformation2);
-            Controls.Add(Label_WelcomeInformation1);
+            Controls.Add(Label_WelcomeInformation);
             Controls.Add(Label_WelcomeText);
             Controls.Add(Button_MainMenuConvertPaths);
             Name = "Window_MainWindow";
@@ -105,10 +104,33 @@
 
         #endregion
 
-        private Button Button_MainMenuConvertPaths;
-        private Label Label_WelcomeText;
-        private Label Label_WelcomeInformation1;
-        private Label Label_WelcomeInformation2;
-        private Button Button_MainMenuAboutThisProgram;
+        public Button Button_MainMenuConvertPaths;
+        public Label Label_WelcomeText;
+        public Label Label_WelcomeInformation;
+        public Button Button_MainMenuAboutThisProgram;
+
+        private void ChangeWindowColors()
+        {
+            // Get the variables for the entire program
+            var variables = new Variables();
+
+            // If Windows is in dark mode, apply the dark window colors
+            if (variables.AllWindows_Booleans_DarkMode)
+            {
+                // Change the window background color to black
+                BackColor = Color.Black;
+
+                // Change all text colors that are black to white
+                Label_WelcomeText.ForeColor = Color.White;
+                Label_WelcomeInformation.ForeColor = Color.White;
+
+                // Change button colors to fit the dark mode setting
+                Button_MainMenuConvertPaths.ForeColor = Color.White;
+                Button_MainMenuConvertPaths.BackColor = Color.DarkRed;
+                
+                Button_MainMenuAboutThisProgram.ForeColor = Color.White;
+                Button_MainMenuAboutThisProgram.BackColor = Color.DarkRed;
+            }
+        }
     }
 }

@@ -2,19 +2,35 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using windows2msdos_functions;
+using windows2msdos_variables;
 
 namespace windows2msdos
 {
-    public partial class AboutThisProgram : Form
+    public partial class Window_AboutThisProgram : Form
     {
-        public AboutThisProgram()
+        public Window_AboutThisProgram()
         {
+            // Initalize the window component
             InitializeComponent();
+
+            // Change the window colors if dark mode is enabled
+            ChangeWindowColors();
+        }
+
+        private void PictureBox_Windows2DOSLogo_Click(object sender, EventArgs e)
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "https://github.com/SpencerlyEverly/Windows2DOS",
+                UseShellExecute = true
+            });
         }
     }
 }
