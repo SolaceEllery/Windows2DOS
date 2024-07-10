@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using windows2msdos_functions;
 using windows2msdos_variables;
 
 namespace windows2msdos
@@ -34,19 +35,24 @@ namespace windows2msdos
             NewWindowVar.ShowDialog();
         }
 
-        // This is called when the program is about to exit.
-        private void FormClosedEventHandler(object sender, EventArgs e)
+        private void Window_MainWindow_Load(object sender, EventArgs e)
         {
-            var variables = new Variables();
 
-            // Make sure the loop ends before we completely exit the program
-            if (variables.AllWindows_Booleans_LoopProgram)
-            {
-                variables.AllWindows_Booleans_LoopProgram = false;
-            }
+        }
 
-            // Exit the program entirely, don't let any processes run in the background whatsoever
-            Application.Exit();
+        private void Button_ExitProgram_Click(object sender, EventArgs e)
+        {
+            // Get the functions for the entire program
+            var functions = new Functions();
+
+            // Run the function to end the program
+            functions.Windows2DOS_CloseProgram();
+        }
+
+        private void Button_MainMenuMinimize_Click(object sender, EventArgs e)
+        {
+            // Minimize the window
+            this.WindowState = FormWindowState.Minimized;
         }
     }
 }

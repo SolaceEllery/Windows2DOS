@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Windows;
+using System.Management;
+using System.IO;
 using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
@@ -48,7 +51,6 @@ namespace windows2msdos_variables
         // The window title for the main window
         public string MainWindowTitle = "Windows/MS-DOS Conversion Tools";
 
-
         // [--PATH CONVERTER WINDOW--]
 
         // Strings:
@@ -70,14 +72,8 @@ namespace windows2msdos_variables
 
         // Strings:
 
-        // 'File' string
-        public string AllWindows_Strings_File = "File";
-        // 'Folder' string
-        public string AllWindows_Strings_Folder = "Folder";
-        // Button string for converting a Windows thing to an MS-DOS format
-        public string AllWindows_Strings_Windows2DOS = "Windows -> MS-DOS";
-        // Button string for converting an MS-DOS thing to a Windows format
-        public string AllWindows_Strings_DOS2Windows = "MS-DOS -> Windows";
+        // The path to the running application.
+        public string AllWindows_Strings_AppPath = AppDomain.CurrentDomain.BaseDirectory;
 
         // Booleans:
 
@@ -85,8 +81,6 @@ namespace windows2msdos_variables
         public bool AllWindows_Booleans_GetWindowsDarkModeSettings = true;
         // Is the program in dark mode?
         public bool AllWindows_Booleans_DarkMode = true;
-        // This is true so that we can run functions on every frame if we need to.
-        public bool AllWindows_Booleans_LoopProgram = true;
     }
 }
 
@@ -105,9 +99,12 @@ namespace windows2msdos_variables
 
 namespace windows2msdos_functions
 {
+    using System.Globalization;
     using System.Runtime.InteropServices;
+    using System.Security.Cryptography;
     using windows2msdos;
     using windows2msdos_variables;
+    using static System.Windows.Forms.LinkLabel;
 
     public class Functions
     {
@@ -188,24 +185,51 @@ namespace windows2msdos_functions
         // Program startup method for running non-GUI command prompt processes for arguments specified
         public void Windows2DOS_InitCmdArgsAndFuncs(object[] args)
         {
+            // Get the variables for the entire program
+            var variables = new Variables();
+
+            // Path Conversion Variables
             bool ConvertPaths_Enabled = false;
-            string ConvertPaths_Path = "NOT SPECIFIED";
             bool ConvertPaths_Win2DOS = true;
-            string ConvertPaths_Output = "";
+            string ConvertPaths_ConvertedPath = "";
+            string ConvertPaths_PathToUse = "NOT SPECIFIED";
+            
+
+            // Logging-Related Variables
+            bool Logging_WriteToFile = false;
+            string Logging_FileToWriteTo = "NOT SPECIFIED";
+            string Logging_DefaultFilepath = variables.AllWindows_Strings_AppPath + "logs/Windows2DOS-" + Windows2DOS_GetCurrentDate(true) + "-" + Windows2DOS_GetCurrentTime(true) + ".log";
 
             for (int i = 0; i <= args.Length; i++)
             {
                 // Help info
-                if ((args[i].ToString() == "-h" || args[i].ToString() == "--help") && args[i + 1] != null)
+                if (args[i] == (object)"-h" || args[i] == (object)"--help")
                 {
-                    Debug.WriteLine(
+                    Console.Write(
 @"Windows2DOS
 By Spencerly D. Everly
 
 Global Options:
 
+-i/--input
+    The input of a path/filepath.
+    This can be used for converting the input to either Windows/DOS
+    path formats.
 -o/--output
-    The output of a path/filepath for converting to Windows/DOS.
+    The output of a path/filepath. This is an optional argument.
+    This can be used for specifying a custom filepath for writing
+    to a log file.
+-l/--log
+    If this is specified after the input and output arguments,
+    the program will log details about what the program did to
+    a log file.
+    
+    If the output is not specified, then the default log writing
+    path will be used instead:
+
+" + 
+variables.AllWindows_Strings_AppPath + "logs/Windows2DOS-" + Windows2DOS_GetCurrentDate(true) + "-" + Windows2DOS_GetCurrentTime(true) + ".log"
++ @"
 
 [pathFormat]                   
     (With no apostrophes)
@@ -221,28 +245,67 @@ General Commands:
 To start the actual GUI, execute this program without any arguments."
                     );
                 }
-                // Output directory/filepath
-                if ((args[i].ToString() == "-o" || args[i].ToString() == "--output") && args[i + 1] != null)
+                // Input directory/filepath
+                if ((args[i] == (object)"-i" || args[i] == (object)"--input") && args[i + 1] != null)
                 {
-                    ConvertPaths_Path = args[i + 1].ToString()!;
-                    Debug.WriteLine("Output specified as: \"" + ConvertPaths_Path + "\"");
+                    ConvertPaths_PathToUse = args[i + 1].ToString()!;
+                    Console.Write("Input specified, using this filepath for the input:");
+                    Console.Write(ConvertPaths_PathToUse);
+                }
+                // Output directory/filepath
+                if ((args[i] == (object)"-o" || args[i] == (object)"--output") && args[i + 1] != null)
+                {
+                    Logging_FileToWriteTo = args[i + 1].ToString()!;
+                    Console.Write("Output specified, using this filepath for the output:");
+                    Console.Write(Logging_FileToWriteTo);
+                }
+                // Log conversion to a file
+                if (args[i] == (object)"-l" || args[i] == (object)"--log")
+                {
+                    Logging_WriteToFile = true;
+                    // If the output arg didn't get specified, use the default log writing path instead
+                    if (Logging_FileToWriteTo == "NOT SPECIFIED")
+                    {
+                        // Get the current date
+                        string CurrentDate = DateTime.Now.ToString("d", CultureInfo.CreateSpecificCulture("en-us"));
+
+                        // Replace symbols that files can't have to underscores
+                        CurrentDate = CurrentDate.Replace("/", "_");
+
+                        // Get the current time
+                        string CurrentTime = DateTime.Now.ToString("t", CultureInfo.CreateSpecificCulture("en-us"));
+
+                        // Replace symbols that files can't have to underscores, along with replacing spaces with underscores just in case
+                        CurrentTime = CurrentTime.Replace(" ", "_");
+                        CurrentTime = CurrentTime.Replace(":", "_");
+
+                        // Specify the default log writing path
+                        Logging_FileToWriteTo = variables.AllWindows_Strings_AppPath + "logs/Windows2DOS-" + CurrentDate + "-" + CurrentTime + ".log";
+                    }
+                    Console.Write("A log file will be written to this filepath:");
+                    Console.Write(Logging_FileToWriteTo);
                 }
                 // Convert paths (No GUI)
                 if ((args[i].ToString() == "-c" || args[i].ToString() == "--convert") && args[i + 1] != null)
                 {
-                    // Make this true so that the Command Prompt will convert paths
+                    // Make this true
                     ConvertPaths_Enabled = true;
 
                     // Either "WindowsPath" or "DOSPath" can be specified for conversion
                     if (args[i + 1].ToString() == "DOSPath")
                     {
                         ConvertPaths_Win2DOS = true;
-                        Debug.WriteLine("Set to convert a Windows Path to a DOS Path.");
+                        Console.Write("Set to convert a Windows Path to a DOS Path.");
                     }
                     else if (args[i + 1].ToString() == "WindowsPath")
                     {
                         ConvertPaths_Win2DOS = false;
-                        Debug.WriteLine("Set to convert a DOS Path to a Windows Path.");
+                        Console.Write("Set to convert a DOS Path to a Windows Path.");
+                    }
+                    else
+                    {
+                        Console.Write("The conversion argument is not valid. Try using either");
+                        Console.Write("'WindowsPath' or 'DOSPath' to convert an input");
                     }
                 }
             }
@@ -250,21 +313,57 @@ To start the actual GUI, execute this program without any arguments."
             // Run any argument-specified methods below
 
             // Convert paths (No GUI)
-            if(ConvertPaths_Path != "NOT SPECIFIED")
+            if(ConvertPaths_Enabled && ConvertPaths_PathToUse != "NOT SPECIFIED")
             {
-                if (ConvertPaths_Enabled && ConvertPaths_Win2DOS)
+                if (ConvertPaths_Win2DOS)
                 {
-                    ConvertPaths_Output = Windows2DOS_ConvertPath(true, ConvertPaths_Path);
-                    Debug.WriteLine("Converted to a DOS Path:");
+                    ConvertPaths_ConvertedPath = Windows2DOS_ConvertPath(true, ConvertPaths_PathToUse);
+                    Console.Write("Converted to a DOS Path:");
                 }
-                else if (ConvertPaths_Enabled && !ConvertPaths_Win2DOS)
+                else if (!ConvertPaths_Win2DOS)
                 {
-                    ConvertPaths_Output = Windows2DOS_ConvertPath(false, ConvertPaths_Path);
-                    Debug.WriteLine("Converted to a Windows Path:");
+                    ConvertPaths_ConvertedPath = Windows2DOS_ConvertPath(false, ConvertPaths_PathToUse);
+                    Console.Write("Converted to a Windows Path:");
                 }
-                Debug.WriteLine(ConvertPaths_Output);
+                Console.Write(ConvertPaths_ConvertedPath);
             }
 
+            if (Logging_WriteToFile && Logging_FileToWriteTo != "NOT SPECIFIED")
+            {
+                // Lines that log files should write
+                string[] OutputFileLines = [
+                    "---------------------",
+                    "Windows2DOS: Log File",
+                    "---------------------",
+                    "",
+                    "Generated on this date & time:",
+                    DateTime.Now.ToString(),
+                    "",
+                    "--------",
+                    "",
+                    "-- PATH/FILEPATH CONVERSION INFORMATION --",
+                    "",
+                    "Input Path/Filepath:",
+                    ConvertPaths_PathToUse,
+                    "",
+                    "Path/Filepath Conversion Type:",
+                    (ConvertPaths_Win2DOS != false) ? "Windows to MS-DOS" : "MS-DOS to Windows",
+                    "",
+                    "Path/Filepath Converted Result:",
+                    ConvertPaths_ConvertedPath,
+                    "",
+                    "--------",
+                ];
+
+                StreamWriter OutputFile = new(Logging_FileToWriteTo);
+                foreach (string line in OutputFileLines)
+                {
+                    OutputFile.WriteLine(line);
+                }
+                OutputFile.Close();
+            }
+
+            // Exit the environment
             Environment.Exit(0);
         }
 
@@ -326,7 +425,7 @@ To start the actual GUI, execute this program without any arguments."
         // Sets the conversion type for converting Windows/DOS paths
         public void Windows2DOS_SetConversionType(bool isSet)
         {
-            // Get the variables and functions for the entire program
+            // Get the variables for the entire program
             var variables = new Variables();
 
             // Check "isSet". If true, the converter will convert from MS-DOS to Windows, else if false, the converter will convert from Windows to MS-DOS
@@ -460,6 +559,58 @@ To start the actual GUI, execute this program without any arguments."
             return (int)msgBox;
         }
 
+        public string Windows2DOS_GetCurrentDate(bool isFileName)
+        {
+            // Get the current date
+            string CurrentDate = DateTime.Now.ToString("d", CultureInfo.CreateSpecificCulture("en-us"));
+
+            // Replace symbols that files can't have to underscores if "isFileName" is true
+            if (isFileName)
+            {
+                CurrentDate = CurrentDate.Replace("/", "_");
+            }
+
+            // Return the date
+            return CurrentDate;
+        }
+
+        public string Windows2DOS_GetCurrentTime(bool isFileName)
+        {
+            // Get the current time
+            string CurrentTime = DateTime.Now.ToString("t", CultureInfo.CreateSpecificCulture("en-us"));
+
+            // Replace symbols that files can't have to underscores if "isFileName" is true
+            if (isFileName)
+            {
+                CurrentTime = CurrentTime.Replace(" ", "_");
+                CurrentTime = CurrentTime.Replace(":", "_");
+            }
+
+            // Return the date
+            return CurrentTime;
+        }
+
+        // This is called when the program should exit.
+        public void Windows2DOS_CloseProgram()
+        {
+            // Exit the program itself, but the process will still run
+            Application.Exit();
+
+            // -- Since the program has not 100% quit entirely (It's still running in the background at this point), attempt to kill the entire process --
+
+            // Get the process itself, and the PID needed for killing the program
+            System.Diagnostics.Process process = System.Diagnostics.Process.GetCurrentProcess();
+            int pid = process.Id;
+
+            // Check if the process is actually valid before we go ahead and kill off the program. If not valid, WARN the user of the mismatch
+            if (process != Process.GetProcessById(pid))
+            {
+                int error = Windows2DOS_ShowMessageBox_Error_Simple("WARNING", "THE PROCESS CHECK BEFORE KILLING THE PROGRAM DETECTED THAT THE CURRENT PROCESS RETRIEVED\nDOESNOT MATCH THE PROCESS ID FOR EXITING THE PROGRAM ENTIRELY.\n\nBEFORE YOU CLICK OKAY, I RECOMMEND YOU PRESS CTRL + ALT + DEL, OPEN TASK MANAGER, AND\nKILL THE PROGRAM THERE.\n\nIF YOU CAN'T DO SO, IF YOU CLICK OK, THE PROGRAM WILL STILL SEND TO TERMINATE, BUT MAY TERMINATE THE WRONG PROCESS BY ACCIDENT,\nAND MAY CRASH YOUR COMPUTER IF ANY SYSTEM PROCESS IS TERMINATED OF ALL OTHER PROCESSES RUNNING.");
+            }
+
+            // Finally, we can kill the process entirely!
+            process.Kill(true);
+        }
     }
 }
 
@@ -492,13 +643,24 @@ namespace windows2msdos
         [STAThread]
         static void Main(string[] args)
         {
-            // Set some mandatory settings
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(true);
-
             // Get the variables and functions for the entire program
             var variables = new Variables();
             var functions = new Functions();
+
+            try
+            {
+                Process appProcess = new();
+                appProcess.StartInfo.UseShellExecute = false;
+                appProcess.StartInfo.FileName = variables.AllWindows_Strings_AppPath + "Windows2DOS.exe";
+                appProcess.Start();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            // Set some mandatory settings
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(true);
 
             // Prepare the "Window_MainWindow" class as a variable
             var mainWindowVar = new Window_MainWindow();
@@ -506,8 +668,8 @@ namespace windows2msdos
             // Run the startup settings configurator function. If there are no command prompt arguments, the command line won't be used for running the program
             if (args.Length != 0)
             {
-                // Make a new object array variable
-                object[] argsForInit = [""];
+                // Make a new blank object array variable
+                object[] argsForInit = [];
 
                 // Convert the string array to an object array
                 for (int i = 0; i <= args.Length; i++)
@@ -515,8 +677,8 @@ namespace windows2msdos
                     argsForInit[i] = (string)args[i];
                 }
 
-                // Now run the initiation method
-                functions.Windows2DOS_Init(argsForInit);
+                // Now run the command prompt side of the program
+                functions.Windows2DOS_InitCmdArgsAndFuncs(argsForInit);
             }
             else
             {
@@ -543,11 +705,6 @@ namespace windows2msdos
                 mainWindowVar.Button_MainMenuConvertPaths.BackColor = Color.DarkRed;
                 mainWindowVar.Button_MainMenuConvertPaths.ForeColor = Color.White;
             }
-            do
-            {
-                functions.Windows2DOS_CheckDarkModeSettings();
-            }
-            while (variables.AllWindows_Booleans_LoopProgram);
         }
     }
 }

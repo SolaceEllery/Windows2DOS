@@ -34,6 +34,8 @@ namespace windows2msdos
             Label_WelcomeText = new Label();
             Label_WelcomeInformation = new Label();
             Button_MainMenuAboutThisProgram = new Button();
+            Button_ExitProgram = new Button();
+            Button_MainMenuMinimize = new Button();
             SuspendLayout();
             // 
             // Button_MainMenuConvertPaths
@@ -41,7 +43,7 @@ namespace windows2msdos
             Button_MainMenuConvertPaths.BackColor = Color.SeaShell;
             Button_MainMenuConvertPaths.Font = new Font("Roboto", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Button_MainMenuConvertPaths.ForeColor = Color.Black;
-            Button_MainMenuConvertPaths.Location = new Point(572, 12);
+            Button_MainMenuConvertPaths.Location = new Point(572, 46);
             Button_MainMenuConvertPaths.Name = "Button_MainMenuConvertPaths";
             Button_MainMenuConvertPaths.Size = new Size(216, 40);
             Button_MainMenuConvertPaths.TabIndex = 0;
@@ -86,12 +88,49 @@ namespace windows2msdos
             Button_MainMenuAboutThisProgram.UseVisualStyleBackColor = false;
             Button_MainMenuAboutThisProgram.Click += Button_MainMenuAboutThisProgram_Click;
             // 
+            // Button_ExitProgram
+            // 
+            Button_ExitProgram.BackColor = Color.OrangeRed;
+            Button_ExitProgram.Font = new Font("Microsoft Avant", 10F, FontStyle.Bold);
+            Button_ExitProgram.ForeColor = Color.Black;
+            Button_ExitProgram.Location = new Point(740, 9);
+            Button_ExitProgram.Name = "Button_ExitProgram";
+            Button_ExitProgram.Size = new Size(46, 31);
+            Button_ExitProgram.TabIndex = 5;
+            Button_ExitProgram.Text = "X";
+            Button_ExitProgram.UseVisualStyleBackColor = false;
+            Button_ExitProgram.Click += Button_ExitProgram_Click;
+            // 
+            // Button_MainMenuMinimize
+            // 
+            Button_MainMenuMinimize.BackColor = Color.Linen;
+            Button_MainMenuMinimize.BackgroundImageLayout = ImageLayout.None;
+            Button_MainMenuMinimize.FlatAppearance.BorderColor = Color.Linen;
+            Button_MainMenuMinimize.FlatAppearance.BorderSize = 12;
+            Button_MainMenuMinimize.FlatAppearance.MouseDownBackColor = Color.Beige;
+            Button_MainMenuMinimize.FlatAppearance.MouseOverBackColor = Color.Black;
+            Button_MainMenuMinimize.Font = new Font("Microsoft Avant", 14F, FontStyle.Bold);
+            Button_MainMenuMinimize.ForeColor = Color.Black;
+            Button_MainMenuMinimize.Location = new Point(691, 9);
+            Button_MainMenuMinimize.Margin = new Padding(0);
+            Button_MainMenuMinimize.Name = "Button_MainMenuMinimize";
+            Button_MainMenuMinimize.RightToLeft = RightToLeft.No;
+            Button_MainMenuMinimize.Size = new Size(46, 31);
+            Button_MainMenuMinimize.TabIndex = 6;
+            Button_MainMenuMinimize.Text = "─";
+            Button_MainMenuMinimize.TextAlign = ContentAlignment.TopCenter;
+            Button_MainMenuMinimize.UseVisualStyleBackColor = false;
+            Button_MainMenuMinimize.Click += Button_MainMenuMinimize_Click;
+            // 
             // Window_MainWindow
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.WhiteSmoke;
             ClientSize = new Size(800, 319);
+            ControlBox = false;
+            Controls.Add(Button_MainMenuMinimize);
+            Controls.Add(Button_ExitProgram);
             Controls.Add(Button_MainMenuAboutThisProgram);
             Controls.Add(Label_WelcomeInformation);
             Controls.Add(Label_WelcomeText);
@@ -132,5 +171,8 @@ namespace windows2msdos
                 Button_MainMenuAboutThisProgram.BackColor = Color.DarkRed;
             }
         }
+
+        public Button Button_ExitProgram;
+        public Button Button_MainMenuMinimize;
     }
 }
