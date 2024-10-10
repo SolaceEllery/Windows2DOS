@@ -55,11 +55,11 @@ namespace windows2msdos
             // 
             Label_WelcomeText.AutoSize = true;
             Label_WelcomeText.BackColor = Color.Transparent;
-            Label_WelcomeText.Font = new Font("Spencer Everly Font V3", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            Label_WelcomeText.Font = new Font("WebPlus IBM BIOS-2y", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
             Label_WelcomeText.ForeColor = Color.Black;
-            Label_WelcomeText.Location = new Point(12, 9);
+            Label_WelcomeText.Location = new Point(12, 14);
             Label_WelcomeText.Name = "Label_WelcomeText";
-            Label_WelcomeText.Size = new Size(436, 39);
+            Label_WelcomeText.Size = new Size(405, 32);
             Label_WelcomeText.TabIndex = 1;
             Label_WelcomeText.Text = "Welcome to Windows2DOS.";
             // 
@@ -67,13 +67,13 @@ namespace windows2msdos
             // 
             Label_WelcomeInformation.AutoSize = true;
             Label_WelcomeInformation.BackColor = Color.Transparent;
-            Label_WelcomeInformation.Font = new Font("Spencer Everly Font V3", 12F);
+            Label_WelcomeInformation.Font = new Font("WebPlus IBM BIOS", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Label_WelcomeInformation.ForeColor = Color.Black;
             Label_WelcomeInformation.Location = new Point(12, 61);
             Label_WelcomeInformation.Name = "Label_WelcomeInformation";
-            Label_WelcomeInformation.Size = new Size(464, 40);
+            Label_WelcomeInformation.Size = new Size(487, 80);
             Label_WelcomeInformation.TabIndex = 2;
-            Label_WelcomeInformation.Text = "This is a conversion tool for many things Windows + DOS related.\r\nPlease select any of our tools on the right in order to use them!";
+            Label_WelcomeInformation.Text = "This is a conversion tool for \r\nmany things Windows +\r\nDOS related. Please select\r\nany of our tools on the right\r\nin order to use them!";
             // 
             // Button_MainMenuAboutThisProgram
             // 

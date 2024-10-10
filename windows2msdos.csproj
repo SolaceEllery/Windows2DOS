@@ -1,24 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net9.0-windows7.0</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <StartupObject>windows2msdos.Program</StartupObject>
-    <Authors>Spencerly D. Everly</Authors>
-    <Version>0.1.0.1</Version>
-    <Company>Spencerly Enterprises</Company>
+    <Authors>Solace D. Ellery</Authors>
+    <Version>0.1.0</Version>
+    <Company></Company>
     <Product>Windows2DOS</Product>
     <Description>Useful bidirectional Windows/DOS converter tools</Description>
-    <Copyright>2024 Spencerly Enterprises, No Rights Reserved</Copyright>
-    <PackageProjectUrl>https://github.com/SpencerlyEverly/Windows2DOS</PackageProjectUrl>
+    <Copyright>2024-2025 Solace Ellery, No Rights Reserved</Copyright>
+    <PackageProjectUrl>https://github.com/SolaceEllery/Windows2DOS</PackageProjectUrl>
     <PackageIcon>icon-program.png</PackageIcon>
     <Title>Windows2DOS</Title>
     <PackageId>Windows2DOS</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/SpencerlyEverly/Windows2DOS</RepositoryUrl>
+    <RepositoryUrl>https://github.com/SolaceEllery/Windows2DOS</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>windows,dos,converter,tool,tools,convert,from,to,and,back,bidirectional</PackageTags>
     <PackageOutputPath>$(SolutionDir)bin\$(Configuration)</PackageOutputPath>
@@ -26,6 +26,12 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <AssemblyName>Windows2DOS</AssemblyName>
     <RootNamespace>Windows2DOS</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningLevel>0</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <WarningLevel>0</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="icon.ico" />

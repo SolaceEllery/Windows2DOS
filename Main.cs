@@ -10,17 +10,33 @@ using System.Windows.Forms;
 using windows2msdos_functions;
 using windows2msdos_variables;
 
+// Prevent warnings about unused parameters being used, as well as prevent unnecessary suppression warnings
+#pragma warning disable IDE0079
+#pragma warning disable IDE0060
+
 namespace windows2msdos
 {
     public partial class Window_MainWindow : Form
     {
         public Window_MainWindow()
         {
+            // Get the variables
+            var variables = new Variables();
+
             // Initalize the window component
             InitializeComponent();
 
             // Change the window colors if dark mode is enabled
             ChangeWindowColors();
+
+            // Put together all text instances
+            Text = variables.MainWindow_Strings_WindowTitle;
+
+            Label_WelcomeText.Text = variables.MainWindow_Strings_WelcomeText;
+            Label_WelcomeInformation.Text = variables.MainWindow_Strings_WelcomeInformation;
+
+            Button_MainMenuConvertPaths.Text = variables.MainWindows_Strings_Buttons_PathConverter;
+            Button_MainMenuAboutThisProgram.Text = variables.MainWindows_Strings_Buttons_AboutThisProgram;
         }
 
         private void Button_MainMenuConvertPaths_Click(object sender, EventArgs e)

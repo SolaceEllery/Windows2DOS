@@ -1,4 +1,9 @@
-﻿using System;
+﻿/*
+    Windows2DOS: Bidirectional All-In-One Windows & DOS Conversion Utilities
+    By Solace D. Ellery
+*/
+
+using System;
 using System.Windows;
 using System.Management;
 using System.IO;
@@ -9,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Win32;
+using System.Runtime.InteropServices;
 
 // Prevents warnings about typing up commas if an array will have more values later on
 #pragma warning disable IDE0079
@@ -23,7 +29,8 @@ using Microsoft.Win32;
 #pragma warning disable CA1401
 // Prevents warnings about suggesting making certain variables read-only
 #pragma warning disable IDE0044
-
+// Prevents warnings about unmatched folder structures
+#pragma warning disable IDE0130
 
 
 
@@ -48,13 +55,23 @@ namespace windows2msdos_variables
 
         // Strings:
 
-        // The window title for the main window
-        public string MainWindowTitle = "Windows/MS-DOS Conversion Tools";
+        // Main window title
+        public string MainWindow_Strings_WindowTitle = "Windows/MS-DOS Conversion Tools";
+        // Welcome text
+        public string MainWindow_Strings_WelcomeText = "Welcome to Windows2DOS.";
+        // Welcome info
+        public string MainWindow_Strings_WelcomeInformation = "This is a conversion tool for \r\nmany things Windows +\r\nDOS related. Please select\r\nany of our tools on the right\r\nin order to use them!";
+        // 'Path Converter' button text
+        public string MainWindows_Strings_Buttons_PathConverter = "Path Converter";
+        // 'About This Program' button text
+        public string MainWindows_Strings_Buttons_AboutThisProgram = "About This Program";
 
-        // [--PATH CONVERTER WINDOW--]
+        // [--"PATH CONVERTER" WINDOW--]
 
         // Strings:
 
+        // Main window title
+        public string PathWindow_Strings_WindowText = "Windows/MS-DOS Conversion Tools: Path Converter";
         // Text for the output Windows Path textbox
         public string PathWindow_Strings_WinPath = "Windows Path";
         // Text for the output MS-DOS Path textbox
@@ -66,6 +83,21 @@ namespace windows2msdos_variables
 
         // Are we converting Windows paths to DOS paths, or the other way around?
         public bool PathWindow_Booleans_ConvertWindowsPaths2DOS = true;
+
+        // [--"ABOUT THIS PROGRAM" WINDOW--]
+
+        // Strings:
+
+        // Main window title
+        public string AboutWindow_Strings_WindowTitle = "About Windows2DOS";
+        // Program name
+        public string AboutWindow_Strings_ProgramName = "Windows2DOS";
+        // Program version
+        public string AboutWindow_Strings_ProgramVersion = "v0.1.0b";
+        // Program author
+        public string AboutWindow_Strings_ProgramAuthor = "Programmed by Solace D. Ellery";
+        // Program license information
+        public string AboutWindow_Strings_ProgramLicenseInfo = "This program is 100% open source with\r\nno license whatsoever. Anyone can do\r\nanything with this program outside the\r\nrepository as they wish.";
 
 
         // [--ALL WINDOWS--]
@@ -108,41 +140,44 @@ namespace windows2msdos_functions
 
     public class Functions
     {
+        // Import the "kernel32.dll" file for retrieving the raw call for the program
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        // Import "GetShortPathName"
+        static extern Int32 GetShortPathName(string path, StringBuilder shortPath, int shortPathLength);
+
+        // Import the "kernel32.dll" file
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        // Import "GetLongPathName"
+        static extern Int32 GetLongPathName(string path, StringBuilder longPath, int longPathLength);
 
 
-        // [--MANDATORY METHODS FOR LINKING KERNEL32.DLL--]
+        // [--MANDATORY METHODS--]
 
-        // Gets a DOS path string value
-        public string GetShortPathName(string longPath)
+        // Gets a DOS path string value (String returning function)
+        public string Windows2DOS_GetDOSPathName(string path1)
         {
-            StringBuilder shortPath = new(longPath.Length + 1);
+            StringBuilder path2 = new(path1.Length + 1);
 
-            if (GetShortPathName(longPath, shortPath, shortPath.Capacity) == 0)
+            if (GetShortPathName(path1, path2, path2.Capacity) == 0)
             {
-                return longPath;
+                return path1;
             }
 
-            return shortPath.ToString();
+            return path2.ToString();
         }
 
-        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        public static extern Int32 GetShortPathName(string path, StringBuilder shortPath, Int32 shortPathLength);
-
-        // Gets a Windows path string value
-        public string GetLongPathName(string shortPath)
+        // Gets a Windows path string value (String returning function)
+        public string Windows2DOS_GetWindowsPathName(string path1)
         {
-            StringBuilder longPath = new(1024);
+            StringBuilder path2 = new(path1.Length + 1);
 
-            if (GetLongPathName(shortPath, longPath, longPath.Capacity) == 0)
+            if (GetLongPathName(path1, path2, path2.Capacity) == 0)
             {
-                return shortPath;
+                return path1;
             }
 
-            return longPath.ToString();
+            return path2.ToString();
         }
-
-        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        static extern Int32 GetLongPathName(string shortPath, StringBuilder longPath, Int32 longPathLength);
 
 
 
@@ -206,11 +241,13 @@ namespace windows2msdos_functions
                 if (args[i] == (object)"-h" || args[i] == (object)"--help")
                 {
                     Console.Write(
-@"Windows2DOS
-By Spencerly D. Everly
+@"Windows2DOS (v0.1.0)
+By Solace D. Ellery
 
 Global Options:
 
+-h/--help
+    Show this help dialog and exit
 -i/--input
     The input of a path/filepath.
     This can be used for converting the input to either Windows/DOS
@@ -422,23 +459,6 @@ To start the actual GUI, execute this program without any arguments."
             return Windows2DOS_MethodFunctionExists("windows2msdos_functions", "Functions", methodName);
         }
 
-        // Sets the conversion type for converting Windows/DOS paths
-        public void Windows2DOS_SetConversionType(bool isSet)
-        {
-            // Get the variables for the entire program
-            var variables = new Variables();
-
-            // Check "isSet". If true, the converter will convert from MS-DOS to Windows, else if false, the converter will convert from Windows to MS-DOS
-            if (isSet)
-            {
-                variables.PathWindow_Booleans_ConvertWindowsPaths2DOS = true;
-            }
-            else
-            {
-                variables.PathWindow_Booleans_ConvertWindowsPaths2DOS = false;
-            }
-        }
-
         /*
             Converts a path.
             
@@ -447,21 +467,18 @@ To start the actual GUI, execute this program without any arguments."
         */
         public string Windows2DOS_ConvertPath(bool toDOS, string inPath)
         {
-            // Prepare the "Window_PathConverter" class as a variable
-            var WindowPathConverterVar = new Window_PathConverter();
+            string convertedPath = "";
 
             if (toDOS)
             {
-                StringBuilder shortPath = new(65000);
-                int shortPathConv = GetShortPathName(inPath, shortPath, shortPath.Capacity);
-                return shortPath.ToString();
+                convertedPath = Windows2DOS_GetDOSPathName(inPath);
             }
             else
             {
-                StringBuilder longPath = new(1024);
-                int longPathConv = GetLongPathName(inPath, longPath, longPath.Capacity);
-                return longPath.ToString();
+                convertedPath = Windows2DOS_GetWindowsPathName(inPath);
             }
+
+            return convertedPath;
         }
 
         /*
@@ -600,13 +617,6 @@ To start the actual GUI, execute this program without any arguments."
 
             // Get the process itself, and the PID needed for killing the program
             System.Diagnostics.Process process = System.Diagnostics.Process.GetCurrentProcess();
-            int pid = process.Id;
-
-            // Check if the process is actually valid before we go ahead and kill off the program. If not valid, WARN the user of the mismatch
-            if (process != Process.GetProcessById(pid))
-            {
-                int error = Windows2DOS_ShowMessageBox_Error_Simple("WARNING", "THE PROCESS CHECK BEFORE KILLING THE PROGRAM DETECTED THAT THE CURRENT PROCESS RETRIEVED\nDOESNOT MATCH THE PROCESS ID FOR EXITING THE PROGRAM ENTIRELY.\n\nBEFORE YOU CLICK OKAY, I RECOMMEND YOU PRESS CTRL + ALT + DEL, OPEN TASK MANAGER, AND\nKILL THE PROGRAM THERE.\n\nIF YOU CAN'T DO SO, IF YOU CLICK OK, THE PROGRAM WILL STILL SEND TO TERMINATE, BUT MAY TERMINATE THE WRONG PROCESS BY ACCIDENT,\nAND MAY CRASH YOUR COMPUTER IF ANY SYSTEM PROCESS IS TERMINATED OF ALL OTHER PROCESSES RUNNING.");
-            }
 
             // Finally, we can kill the process entirely!
             process.Kill(true);
@@ -647,17 +657,6 @@ namespace windows2msdos
             var variables = new Variables();
             var functions = new Functions();
 
-            try
-            {
-                Process appProcess = new();
-                appProcess.StartInfo.UseShellExecute = false;
-                appProcess.StartInfo.FileName = variables.AllWindows_Strings_AppPath + "Windows2DOS.exe";
-                appProcess.Start();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
             // Set some mandatory settings
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(true);
@@ -672,9 +671,9 @@ namespace windows2msdos
                 object[] argsForInit = [];
 
                 // Convert the string array to an object array
-                for (int i = 0; i <= args.Length; i++)
+                for (int i = 0; i <= (int)args.Length; i++)
                 {
-                    argsForInit[i] = (string)args[i];
+                    argsForInit[i] = args[i];
                 }
 
                 // Now run the command prompt side of the program

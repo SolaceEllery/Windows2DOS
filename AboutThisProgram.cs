@@ -17,18 +17,29 @@ namespace windows2msdos
     {
         public Window_AboutThisProgram()
         {
+            // Get the variables
+            var variables = new Variables();
+
             // Initalize the window component
             InitializeComponent();
 
             // Change the window colors if dark mode is enabled
             ChangeWindowColors();
+
+            // Put together all text instances
+            Text = variables.AboutWindow_Strings_WindowTitle;
+
+            Label_AboutThisProgram_ProgramName.Text = variables.AboutWindow_Strings_ProgramName;
+            Label_AboutThisProgram_VersionNumber.Text = variables.AboutWindow_Strings_ProgramVersion;
+            Label_AboutThisProgram_Author.Text = variables.AboutWindow_Strings_ProgramAuthor;
+            Label_AboutThisProgram_OpenSourceInfo.Text = variables.AboutWindow_Strings_ProgramLicenseInfo;
         }
 
         private void PictureBox_Windows2DOSLogo_Click(object sender, EventArgs e)
         {
             Process.Start(new ProcessStartInfo
             {
-                FileName = "https://github.com/SpencerlyEverly/Windows2DOS",
+                FileName = "https://github.com/SolaceEllery/Windows2DOS",
                 UseShellExecute = true
             });
         }

@@ -39,17 +39,24 @@ namespace windows2msdos
 
         public Window_PathConverter()
         {
+            // Get the variables
+            var variables = new Variables();
+
             // Initalize the window component
             InitializeComponent();
 
             // Change the window colors if dark mode is enabled
             ChangeWindowColors();
+
+            // Put together all text instances
+            Text = variables.PathWindow_Strings_WindowText;
         }
 
         private void Button_SelectFile_Click(object sender, EventArgs e)
         {
-            // Get the functions for the entire program
+            // Get the functions & variables
             var functions = new Functions();
+            var variables = new Variables();
 
             // Open the dialog and retrieve a string of the filepath
             string getFilePath = functions.Windows2DOS_OpenDialogForGettingPath(false);
@@ -57,13 +64,15 @@ namespace windows2msdos
             // If the filepath is valid and the file was found, apply the file path text to the text box
             if (getFilePath != "NOT FOUND")
             {
+                getFilePath = functions.Windows2DOS_ConvertPath(variables.PathWindow_Booleans_ConvertWindowsPaths2DOS, getFilePath);
                 TextBox_WindowsPath.Text = getFilePath;
             }
         }
         private void Button_SelectFolder_Click(object sender, EventArgs e)
         {
-            // Get the functions for the entire program
+            // Get the functions & variables
             var functions = new Functions();
+            var variables = new Variables();
 
             // Open the dialog and retrieve a string of the folder
             string getFolderPath = functions.Windows2DOS_OpenDialogForGettingPath(true);
@@ -71,36 +80,36 @@ namespace windows2msdos
             // If the folder is valid and the folder was found, apply the folder path text to the text box
             if (getFolderPath != "NOT FOUND")
             {
+                getFolderPath = functions.Windows2DOS_ConvertPath(variables.PathWindow_Booleans_ConvertWindowsPaths2DOS, getFolderPath);
                 TextBox_WindowsPath.Text = getFolderPath;
             }
         }
 
         private void CheckBox_SwitchConverter_CheckedChanged(object sender, EventArgs e)
         {
-            // Get the functions for the entire program
+            // Get the functions & variables
             var functions = new Functions();
+            var variables = new Variables();
 
             // Get checkbox checked state information
             CheckBox checkBox = (CheckBox)sender;
             string checkBoxState = checkBox.CheckState.ToString();
 
-            // Create a variable for check detection
-            bool isCheckBoxChecked = true;
-
             // Make sure "isCheckBoxChecked" is set to true if "checkBoxState" says "Checked", but if not, then it's set to false
-            if (checkBoxState == "Checked")
+            if (checkBoxState == "Unchecked")
             {
-                isCheckBoxChecked = true;
-                Label_PathConversionIndicator.Text = "Converting: MS-DOS Path -> Windows Path";
+                Label_PathConversionIndicator.Text = "Converting: Windows -> MS-DOS";
+                variables.PathWindow_Booleans_ConvertWindowsPaths2DOS = true;
             }
-            else
+            else if (checkBoxState == "Checked")
             {
-                isCheckBoxChecked = false;
-                Label_PathConversionIndicator.Text = "Converting: Windows Path -> MS-DOS Path";
+                Label_PathConversionIndicator.Text = "Converting: MS-DOS -> Windows";
+                variables.PathWindow_Booleans_ConvertWindowsPaths2DOS = false;
             }
 
-            // Now set the conversion type setting, along with setting everything else for switching conversions
-            functions.Windows2DOS_SetConversionType(isCheckBoxChecked);
+            // Clear off the text boxes
+            TextBox_WindowsPath.Text = "";
+            TextBox_DOSPath.Text = "";
         }
 
         private void TextBox_WindowsPath_TextChanged(object sender, EventArgs e)
@@ -109,26 +118,11 @@ namespace windows2msdos
             var functions = new Functions();
             var variables = new Variables();
 
-            // Check if this is true so that paths will automatically be converted
-            if (variables.PathWindow_Booleans_ConvertWindowsPaths2DOS)
-            {
-                // Go ahead and convert the path from Windows to DOS
-                TextBox_DOSPath.Text = functions.Windows2DOS_ConvertPath(variables.PathWindow_Booleans_ConvertWindowsPaths2DOS, TextBox_WindowsPath.Text);
-            }
-        }
+            // Create a variable that includes the window class itself
+            var WindowPathConverter = new Window_PathConverter();
 
-        private void TextBox_DOSPath_TextChanged(object sender, EventArgs e)
-        {
-            // Get the functions & variables
-            var functions = new Functions();
-            var variables = new Variables();
-
-            // Check if this is false so that paths will automatically be converted in this text box
-            if (!variables.PathWindow_Booleans_ConvertWindowsPaths2DOS)
-            {
-                // Go ahead and convert the path from DOS to Windows
-                TextBox_WindowsPath.Text = functions.Windows2DOS_ConvertPath(!variables.PathWindow_Booleans_ConvertWindowsPaths2DOS, TextBox_WindowsPath.Text);
-            }
+            // Go ahead and convert the path for the other box if it's set to do so
+            TextBox_DOSPath.Text = functions.Windows2DOS_ConvertPath(variables.PathWindow_Booleans_ConvertWindowsPaths2DOS, TextBox_WindowsPath.Text);
         }
 
         private void Button_ResetPaths_Click(object sender, EventArgs e)
@@ -139,12 +133,13 @@ namespace windows2msdos
             if ((TextBox_WindowsPath.Text != "" || TextBox_DOSPath.Text != "") || (TextBox_WindowsPath.Text != "" && TextBox_DOSPath.Text != ""))
             {
                 // Show a message box before comfirming to clear the paths if they're not empty
-                int response = functions.Windows2DOS_ShowMessageBox_Information_Normal("Warning", "Are you sure you want to reset and clear the paths? You already got paths written down, so by clicking \"Yes\", be aware that what you filled already will be lost.", MessageBoxButtons.YesNo);
+                int response = functions.Windows2DOS_ShowMessageBox_Information_Normal("Warning", "Are you sure you want to reset? We detected you already got a path specified, so by clicking \"Yes\", be aware that what you filled already will be lost.", MessageBoxButtons.YesNo);
 
                 // If the user presses "Yes", clear the paths in the text boxes
                 if (response == (int)DialogResult.Yes)
                 {
-                    functions.Windows2DOS_ClearPathTextValues();
+                    TextBox_WindowsPath.Text = "";
+                    TextBox_DOSPath.Text = "";
                 }
             }
         }
